@@ -10,10 +10,8 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 //
-#include <render/typedef.hpp>
-
-namespace coldline
-{
+#include <render/Common.hpp>
+#include <render/Renderable.hpp>
 
 class SFMLClient
 {
@@ -22,8 +20,11 @@ public:
 
 	void update() noexcept;
 	void draw( sf::Drawable const &drawable, sf::RenderStates states = sf::RenderStates::Default );
+	void render(
+		Renderable const &renderable,
+		sf::RenderStates states = sf::RenderStates::Default );
 
-	void openWindow( RenderSize const &windowSize,
+	void openWindow( render::Size const &windowSize,
 		std::string const &windowTitle,
 		unsigned short fpsLimit = 0,
 		bool vsync = false,
@@ -33,13 +34,12 @@ public:
 	bool isKeyPressed( sf::Keyboard::Key key ) const noexcept;
 
 	std::vector< sf::Event > getEvents() noexcept;
+	sf::Event getEvent() noexcept;
 	sf::RenderWindow& getWindow() noexcept;
-	RenderSize getWindowSize() const noexcept;
+	render::Size getWindowSize() const noexcept;
 private:
 	sf::ContextSettings mSettings;
 	sf::RenderWindow mWindow;
 	sf::Event mEvent;
 	sf::Keyboard mKeyboard;
 };
-
-}

@@ -1,19 +1,16 @@
-SOURCE_DIR = src
-OBJ_DIR = bin
-DEPEND_DIR = depend
-INCLUDE_DIR = include
-LIB_DIR = lib
+TARGET ?= rozue
 
-TARGET = rozue
+BUILD_DIR := build
+SRC_DIR := src
+BIN_DIR := bin
 
-CPP_FILES = $(shell find $(SOURCE_DIR) -type f -name "*.cpp" -printf '%p ')
-OBJ_FILES = $(subst $(SOURCE_DIR),$(OBJ_DIR),$(patsubst %.cpp,%.o,$(CPP_FILES)))
+SRC_FILES := $(shell find $(SRC_DIR) -name "*.cpp")
+OBJ_FILES := $(subst $(SRC_DIR)/,,$(SRC_FILES:%.cpp=$(BUILD_DIR)/%.o))
+DEP_FILES := $(OBJ_FILES:.o=.d)
 
-CXX = clang++
-DEBUG_FLAGS = -g -O0
-WARNING_FLAGS = \
-	-ferror-limit=5 \
-	-Werror \
+CXX := clang++
+INCLUDE_FLAGS := -I $(SRC_DIR)
+WARNING_FLAGS := \
 	-Wall \
 	-Wextra \
 	-Wwrite-strings \
@@ -31,27 +28,25 @@ WARNING_FLAGS = \
 	-Wctor-dtor-privacy \
 	-Wno-long-long \
 	-Weffc++
-STD = -std=c++14 -pedantic
-INCLUDES = -I $(SOURCE_DIR) -I $(INCLUDE_DIR)
-LDLIBS = -lsfml-graphics -lsfml-window -lsfml-system
-LDFLAGS = $(INCLUDES) $(STD) $(WARNING_FLAGS) $(DEBUG_FLAGS) -L $(LIB_DIR) $(LDLIBS)
-CXXFLAGS = $(INCLUDES) $(STD) $(WARNING_FLAGS) $(DEBUG_FLAGS)
+
+LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system -pthread
+DEBUG_FLAGS := -ferror-limit=5 -g -O0 -ftrapv
+FLAGS := $(INCLUDE_FLAGS) $(WARNING_FLAGS) -MMD -MP -std=c++14 -pedantic $(DEBUG_FLAGS)
 
 .PHONY : clean
 
-$(TARGET) : $(OBJ_FILES)
-	$(CXX) $(LDFLAGS) $(OBJ_FILES) -o $@
+$(BIN_DIR)/$(TARGET) : $(OBJ_FILES)
+	@echo "Linking..."
+	@mkdir -p $(BIN_DIR)
+	@$(CXX) $(OBJ_FILES) -o $@ $(LDFLAGS) $(LDLIBS)
 
-$(OBJ_DIR)/%.o : $(SOURCE_DIR)/%.cpp $(DEPEND_DIR)/%.d
+$(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@echo "Building $@..."
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $(SOURCE_DIR)/$*.cpp -o $@
-
-$(DEPEND_DIR)/%.d : $(SOURCE_DIR)/%.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -MM $< > $@
-	@sed -i "1s~^~$(subst $(DEPEND_DIR),$(OBJ_DIR),$(dir $@))~" $@
+	@$(CXX)  $(FLAGS) $(CXXFLAGS) -c $< -o $@
 
 clean :
-	$(RM) -r $(OBJ_DIR) $(DEPEND_DIR) $(TARGET)
+	@echo "Cleaning up..."
+	@$(RM) -r $(BIN_DIR) $(BUILD_DIR)
 
--include $(subst $(OBJ_DIR),$(DEPEND_DIR),$(patsubst %.o,%.d,$(OBJ_FILES)))
+-include $(DEP_FILES)

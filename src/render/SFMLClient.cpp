@@ -7,11 +7,8 @@
 #include <SFML/Graphics/Transform.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 //
-#include <render/typedef.hpp>
+#include <render/Common.hpp>
 #include "SFMLClient.hpp"
-
-namespace coldline
-{
 
 SFMLClient::~SFMLClient()
 {
@@ -29,7 +26,12 @@ void SFMLClient::draw( sf::Drawable const &drawable, sf::RenderStates states )
 	mWindow.draw( drawable, states );
 }
 
-void SFMLClient::openWindow( RenderSize const &windowSize,
+void SFMLClient::render( Renderable const &renderable, sf::RenderStates states )
+{
+	renderable.render( mWindow, states, sf::Color::White );
+}
+
+void SFMLClient::openWindow( render::Size const &windowSize,
 	std::string const &windowTitle,
 	unsigned short fpsLimit,
 	bool vsync,
@@ -38,8 +40,7 @@ void SFMLClient::openWindow( RenderSize const &windowSize,
 	mSettings.antialiasingLevel = antialiasingLevel;
 	mWindow.create( sf::VideoMode( windowSize.x, windowSize.y, 32 ),
 		windowTitle,
-		sf::Style::Titlebar,
-		mSettings );
+		sf::Style::Titlebar, mSettings );
 	if( !mWindow.isOpen() )
 	{
 		throw std::runtime_error( "SFMLClient::openWindow: couldn't initialize window" );
@@ -75,9 +76,7 @@ sf::RenderWindow& SFMLClient::getWindow() noexcept
 	return mWindow;
 }
 
-RenderSize SFMLClient::getWindowSize() const noexcept
+render::Size SFMLClient::getWindowSize() const noexcept
 {
-	return static_cast< RenderSize >( mWindow.getSize());
-}
-
+	return static_cast< render::Size >( mWindow.getSize());
 }

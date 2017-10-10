@@ -1,10 +1,8 @@
-#include <core/server.hpp>
-#include <core/client.hpp>
+#include <core/Game.hpp>
 
 int main()
 {
-	coldline::Client client( "rozueClient" );
-	coldline::Server server( &client );
-	server.loop();
+	Game game;
+	game.start();
 	return 0;
 }
