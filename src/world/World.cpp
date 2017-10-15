@@ -21,18 +21,18 @@ Block const &World::operator[]( world::Point const &point ) const
 {
 	if( !exists( point ))
 	{
-		return loadChunk( Chunk::toChunkPoint( point ))[ Chunk::toChunkInternalPoint( point )];
+		return loadChunk( Chunk::getPosition( point ))[ point ];
 	}
-	return mChunks[ Chunk::toChunkPoint( point )][ Chunk::toChunkInternalPoint( point )];
+	return mChunks[ Chunk::getPosition( point )][ point ];
 }
 
 Block &World::operator[]( world::Point const &point )
 {
 	if( !exists( point ))
 	{
-		return loadChunk( Chunk::toChunkPoint( point ))[ Chunk::toChunkInternalPoint( point )];
+		return loadChunk( Chunk::getPosition( point ))[ point ];
 	}
-	return mChunks[ Chunk::toChunkPoint( point )][ Chunk::toChunkInternalPoint( point )];
+	return mChunks[ Chunk::getPosition( point )][ point ];
 }
 
 
@@ -44,15 +44,15 @@ bool World::sees( world::Point const &from, world::Point const &to ) const
 	{
 		return false;
 	}
-	for( unsigned i = 1; i < plot.size() - 1; i++ )
+	for( auto iPoint = plot.begin(); iPoint < plot.end() - 1; ++iPoint )
 	{
-		if( !operator[]( plot[ i ]).passable())
+		if( !operator[]( *iPoint ).isPassable())
 		{
 			return false;
 		}
-		for( auto const &entity : getEntitiesOn( plot[ i ]))
+		if( isEntityOn( *iPoint ))
 		{
-			if( !entity.get().isPassable())
+			if( getEntityOn( *iPoint ).isPassable() )
 			{
 				return false;
 			}
@@ -63,16 +63,21 @@ bool World::sees( world::Point const &from, world::Point const &to ) const
 
 bool World::isEntityOn( world::Point const &point ) const
 {
-	Chunk const &chunk = getChunk( Chunk::toChunkPoint( point ));
-	return !chunk.getEntitiesOn( Chunk::toChunkInternalPoint( point )).empty();
+	Chunk const &chunk = getChunk( Chunk::getPosition( point ));
+	return chunk.isEntityOn( point );
 }
 
 
-
-std::vector< std::reference_wrapper< const Entity > > World::getEntitiesOn( world::Point const &point ) const
+Entity &World::getEntityOn( world::Point const &point )
 {
-	Chunk const &chunk = getChunk( Chunk::toChunkPoint( point ));
-	return chunk.getEntitiesOn( Chunk::toChunkInternalPoint( point ));
+	Chunk &chunk = getChunk( Chunk::getPosition( point ));
+	return chunk.getEntityOn( point );
+}
+
+Entity const &World::getEntityOn( world::Point const &point ) const
+{
+	Chunk const &chunk = getChunk( Chunk::getPosition( point ));
+	return chunk.getEntityOn( point );
 }
 
 Entity &World::createEntity( world::Point const &position, EntityType const &subtype )
@@ -80,8 +85,8 @@ Entity &World::createEntity( world::Point const &position, EntityType const &sub
 	if( !isEntityOn( position ))
 	{
 		mEntities.emplace_back( *this, position, subtype );
-		Chunk &chunk = getChunk( Chunk::toChunkPoint( position ));
-		chunk.mEntities.push_back( mEntities.back());
+		Chunk &chunk = getChunk( Chunk::getPosition( position ));
+		chunk.mEntities.insert({ position, mEntities.back()});
 	}
 	return mEntities.back();
 }
@@ -95,20 +100,12 @@ Entity &World::createPlayer( EntityType const &subtype )
 
 void World::moveEntity( world::Point const &from, world::Point const &to )
 {
-	if( Chunk::toChunkPoint( from ) != Chunk::toChunkPoint( to ))
-	{
-		Chunk &fromChunk = getChunk( Chunk::toChunkPoint( from ));
-		Chunk &toChunk = getChunk( Chunk::toChunkPoint( to ));
-		for( unsigned i = 0; i < fromChunk.mEntities.size(); i++ )
-		{
-			if( fromChunk.mEntities[ i ].get().getPosition() == from )
-			{
-				toChunk.mEntities.push_back( fromChunk.mEntities[ i ]);
-				fromChunk.mEntities.erase( fromChunk.mEntities.begin() + i );
-				return;
-			}
-		}
-	}
+	auto fromChunkPoint = Chunk::getPosition( from );
+	auto getPosition = Chunk::getPosition( to );
+	Chunk &fromChunk = getChunk( fromChunkPoint );
+	Chunk &toChunk = getChunk( getPosition );
+	toChunk.getEntities().insert({ to, fromChunk.getEntityOn( from )});
+	fromChunk.getEntities().erase( from );
 }
 
 void World::simulate()
@@ -120,7 +117,7 @@ void World::simulate()
 
 bool World::exists( world::Point const &point ) const
 {
-	return mChunks.count( Chunk::toChunkPoint( point )) > 0;
+	return mChunks.count( Chunk::getPosition( point )) > 0;
 }
 
 Chunk &World::loadChunk( chunk::Point const &point ) const

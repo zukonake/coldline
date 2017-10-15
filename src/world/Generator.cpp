@@ -5,7 +5,7 @@
 #include "Generator.hpp"
 
 Generator::Generator( Dataset const &dataset ) :
-	mFloor( dataset.at< BlockType >( "stoneFloor" )),
+	mFloor( dataset.at< BlockType >( "grass" )),
 	mWall( dataset.at< BlockType >( "stoneWall" ))
 {
 

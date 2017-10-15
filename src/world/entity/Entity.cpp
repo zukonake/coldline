@@ -50,15 +50,15 @@ bool Entity::canMove( world::Point const &to ) const
 	{
 		return false;
 	}
-	for( auto &iPoint : plot )
+	for( auto iPoint = plot.begin() + 1; iPoint < plot.end(); ++iPoint )
 	{
-		if( !mWorld[ iPoint ].passable())
+		if( !mWorld[ *iPoint ].isPassable())
 		{
 			return false;
 		}
-		for( auto const &entity : mWorld.getEntitiesOn( iPoint ))
+		if( mWorld.isEntityOn( *iPoint ))
 		{
-			if( !entity.get().isPassable())
+			if( mWorld.getEntityOn( *iPoint ).isPassable())
 			{
 				return false;
 			}

@@ -1,4 +1,5 @@
 #include <world/entity/Entity.hpp>
+#include <world/chunk/Exception.hpp>
 #include "Chunk.hpp"
 
 chunk::Size constexpr Chunk::size;
@@ -10,58 +11,56 @@ Chunk::Chunk() noexcept
 	static_assert( size.z > 0, "Chunk size cannot be 0" );
 }
 
-Block &Chunk::operator[]( chunk::InternalPoint const &point ) noexcept
+Block &Chunk::operator[]( world::Point const &point ) noexcept
 {
-	return mValue[ point ];
+	return mValue[ getInternalPoint( point )];
 }
 
-Block const &Chunk::operator[]( chunk::InternalPoint const &point ) const noexcept
+Block const &Chunk::operator[]( world::Point const &point ) const noexcept
 {
-	return mValue[ point ];
+	return mValue[ getInternalPoint( point )];
 }
 
-std::vector< std::reference_wrapper< Entity > > Chunk::getEntitiesOn( chunk::InternalPoint const &point )
+bool Chunk::isEntityOn( world::Point const &point ) const
 {
-	std::vector< std::reference_wrapper< Entity > > entities;
-	for( auto &iEntity : mEntities )
+	return mEntities.count( point ) > 0;
+}
+
+Entity &Chunk::getEntityOn( world::Point const &point )
+{
+	try
 	{
-		if( toChunkInternalPoint( iEntity.get().getPosition()) == point )
-		{
-			entities.push_back( iEntity );
-		}
+		return mEntities.at( point );
 	}
-	return entities;
+	catch( std::out_of_range const &e )
+	{
+		throw chunk::InvalidEntityError( "TODO" );
+	}
 }
 
-std::vector< std::reference_wrapper< Entity > > Chunk::getEntities()
+Entity const &Chunk::getEntityOn( world::Point const &point ) const
+{
+	try
+	{
+		return mEntities.at( point );
+	}
+	catch( std::out_of_range const &e )
+	{
+		throw chunk::InvalidEntityError( "TODO" );
+	}
+}
+
+typename Chunk::Entities &Chunk::getEntities()
 {
 	return mEntities;
 }
 
-std::vector< std::reference_wrapper< const Entity > > Chunk::getEntitiesOn( chunk::InternalPoint const &point ) const
+typename Chunk::Entities const &Chunk::getEntities() const
 {
-	std::vector< std::reference_wrapper< const Entity > > entities;
-	for( auto const &iEntity : mEntities )
-	{
-		if( toChunkInternalPoint( iEntity.get().getPosition()) == point )
-		{
-			entities.emplace_back( iEntity.get());
-		}
-	}
-	return entities;
+	return mEntities;
 }
 
-std::vector< std::reference_wrapper< const Entity > > Chunk::getEntities() const
-{
-	std::vector< std::reference_wrapper< const Entity > > entities;
-	for( auto const &iEntity : mEntities )
-	{
-		entities.emplace_back( iEntity.get());
-	}
-	return entities;
-}
-
-chunk::Point Chunk::toChunkPoint( world::Point const &point ) noexcept
+chunk::Point Chunk::getPosition( world::Point const &point ) noexcept
 {
 	chunk::Point output = point;
 	if( output.x < 0 )
@@ -79,7 +78,7 @@ chunk::Point Chunk::toChunkPoint( world::Point const &point ) noexcept
 	return output / size;
 }
 
-chunk::InternalPoint Chunk::toChunkInternalPoint( world::Point const &point ) noexcept
+chunk::InternalPoint Chunk::getInternalPoint( world::Point const &point ) noexcept
 {
 	world::Point output = point;
 	output.x %= size.x;

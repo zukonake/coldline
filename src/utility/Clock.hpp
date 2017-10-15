@@ -61,10 +61,9 @@ typename Clock< unit, ratio >::Duration Clock< unit, ratio >::get()
 template< typename unit, typename ratio >
 typename Clock< unit, ratio >::Duration Clock< unit, ratio >::synchronize()
 {
-	Duration delta( 0 );
+	Duration delta = Duration( 1 ) - mCycle;
 	if( mCycle < Duration( 1 ))
 	{
-		delta = Duration( 1 ) - mCycle;
 		std::this_thread::sleep_for( delta );
 		reset();
 	}

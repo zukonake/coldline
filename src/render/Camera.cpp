@@ -7,6 +7,7 @@ Camera::Camera(
 	World const &world,
 	Tile const &nothing,
 	Entity const &entity ) :
+	mLocked( true ),
 	mScreenSize( screenSize ),
 	mSpriteSize( spriteSize ),
 	mWorld( world ),
@@ -18,7 +19,7 @@ Camera::Camera(
 
 void Camera::render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const
 {
-	world::Point const &position = Body::getPosition();
+	world::Point const &position = getPosition();
 	//we get the camera's position in the world
 
 	states.transform.scale( mSpriteSize.x, mSpriteSize.y );
@@ -47,9 +48,10 @@ void Camera::render( sf::RenderTarget &target, sf::RenderStates states, sf::Colo
 	{
 		for( iterator.x = position.x - fov.x; iterator.x <= position.x + fov.x; iterator.x++ )
 		{
-			if( iterator != position )
+			mWorld[ iterator ].render( target, states, color );
+			if( mWorld.isEntityOn( iterator ))
 			{
-				mWorld[ iterator ].render( target, states, color );
+				mWorld.getEntityOn( iterator ).render( target, states, color );
 			}
 			states.transform.translate( 1, 0 );
 			//we move the transform one to the right (one tile)
@@ -60,6 +62,23 @@ void Camera::render( sf::RenderTarget &target, sf::RenderStates states, sf::Colo
 		states.transform.translate( 0, 1 );
 		//we move the transform one to the down (one tile)
 	}
+}
+
+void Camera::lock()
+{
+	mLocked = true;
+	Body::teleport( mEntity.getPosition());
+}
+
+void Camera::unlock()
+{
+	mLocked = false;
+	Body::teleport( mEntity.getPosition());
+}
+
+bool Camera::isLocked() const noexcept
+{
+	return mLocked;
 }
 
 bool Camera::canMove( world::Point const &to ) const

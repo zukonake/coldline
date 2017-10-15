@@ -19,6 +19,10 @@ class Camera : public virtual Renderable, public Body
 		Entity const &entity );
 
 	virtual void render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const override;
+
+	void lock();
+	void unlock();
+	bool isLocked() const noexcept;
 	private:
 	virtual bool canMove( world::Point const &to ) const override;
 

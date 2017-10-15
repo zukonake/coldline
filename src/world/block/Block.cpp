@@ -30,7 +30,7 @@ void Block::render( sf::RenderTarget &target, sf::RenderStates states, sf::Color
 	mType->render( target, states, color );
 }
 
-bool Block::passable() const noexcept
+bool Block::isPassable() const noexcept
 {
 	return !mType->mSolid;
 }

@@ -17,7 +17,7 @@ class Block : public Renderable
 
 	virtual void render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const override;
 
-	bool passable() const noexcept;
+	bool isPassable() const noexcept;
 	private:
 	BlockType const *mType;
 };

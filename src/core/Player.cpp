@@ -9,12 +9,13 @@
 Player::Player( Dataset const &dataset, World &world ) :
 	mDataset( dataset ),
 	mWorld( world ),
+	mEntity( mWorld.createPlayer( mDataset.at< EntityType >( "human" ))),
 	mCamera(
 		{ 800, 600 },
 		{ 32, 32 },
 		mWorld,
 		mDataset.at< Tile >( "nothing" ),
-		mWorld.createPlayer( mDataset.at< EntityType >( "human" ))),
+		mEntity ),
 	mDead( false ),
 	mDoneAction( false )
 {
@@ -60,23 +61,46 @@ void Player::handleEvent( sf::Event const &event )
 		switch( event.key.code )
 		{
 		case sf::Keyboard::W:
-			mCamera.move({ 0, -1, 0 });
+			move({ 0, -1, 0 });
 			break;
 
 		case sf::Keyboard::A:
-			mCamera.move({ -1, 0, 0 });
+			move({ -1, 0, 0 });
 			break;
 
 		case sf::Keyboard::S:
-			mCamera.move({ 0, 1, 0 });
+			move({ 0, 1, 0 });
 			break;
 
 		case sf::Keyboard::D:
-			mCamera.move({ 1, 0, 0 });
+			move({ 1, 0, 0 });
+			break;
+
+		case sf::Keyboard::Q:
+			mCamera.unlock();
+			break;
+
+		case sf::Keyboard::E:
+			mCamera.lock();
 			break;
 
 		default:
 			break;
 		}
+	}
+}
+
+void Player::move( world::Vector const &by )
+{
+	if( mCamera.isLocked())
+	{
+		if( mEntity.move( by ))
+		{
+			mCamera.move( by );
+		}
+	}
+	else
+	{
+		mCamera.move( by );
 	}
 }

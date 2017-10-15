@@ -13,7 +13,7 @@ class Body
 	virtual bool move( world::Vector const &by );
 	virtual bool teleport( world::Point const &to );
 
-	world::Point const &getPosition() const noexcept;
+	virtual world::Point const &getPosition() const noexcept;
 	private:
 	virtual bool canMove( world::Point const &to ) const = 0;
 

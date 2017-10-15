@@ -3,7 +3,7 @@
 #include <geometry/Vector3D.hpp>
 #include <geometry/Line3D.hpp>
 #include <geometry/Space3D.hpp>
-#include <geometry/Map3D.hpp>
+#include <geometry/Array3D.hpp>
 
 class Block;
 
@@ -17,6 +17,6 @@ typedef ::geometry::Vector3D< Coordinate > Vector;
 typedef ::geometry::Line3D< Coordinate > Line;
 typedef ::geometry::Space3D< Coordinate, Length > SpaceScope;
 template< Length width, Length height, Length depth >
-using Space = ::geometry::Map3D< ::Block, width, height, depth >;
+using Space = ::geometry::Array3D< ::Block, width, height, depth >;
 
 }

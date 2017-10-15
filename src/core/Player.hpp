@@ -25,8 +25,10 @@ class Player : public Renderable
 	void handleEvents( std::vector< sf::Event > const &events );
 	private:
 	void handleEvent( sf::Event const &event );
+	void move( world::Vector const &by );
 	Dataset const &mDataset;
 	World &mWorld;
+	Entity &mEntity;
 	Camera mCamera;
 
 	bool mDead;

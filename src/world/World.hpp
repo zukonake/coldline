@@ -27,7 +27,8 @@ class World
 	bool canMove( world::Point const &from, world::Point const &to ) const;
 	bool isEntityOn( world::Point const &point ) const;
 
-	std::vector< std::reference_wrapper< const Entity > > getEntitiesOn( world::Point const &point ) const;
+	Entity &getEntityOn( world::Point const &point );
+	Entity const &getEntityOn( world::Point const &point ) const;
 	Entity &createEntity( world::Point const &position, EntityType const &subtype );
 	Entity &createPlayer( EntityType const &subtype );
 
