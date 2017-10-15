@@ -100,10 +100,8 @@ Entity &World::createPlayer( EntityType const &subtype )
 
 void World::moveEntity( world::Point const &from, world::Point const &to )
 {
-	auto fromChunkPoint = Chunk::getPosition( from );
-	auto getPosition = Chunk::getPosition( to );
-	Chunk &fromChunk = getChunk( fromChunkPoint );
-	Chunk &toChunk = getChunk( getPosition );
+	Chunk &fromChunk = getChunk( Chunk::getPosition( from ));
+	Chunk &toChunk = getChunk( Chunk::getPosition( to ));
 	toChunk.getEntities().insert({ to, fromChunk.getEntityOn( from )});
 	fromChunk.getEntities().erase( from );
 }
