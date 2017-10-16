@@ -1,3 +1,4 @@
+#include <render/Tile.hpp>
 #include <world/World.hpp>
 #include "Camera.hpp"
 
@@ -7,6 +8,7 @@ Camera::Camera(
 	World const &world,
 	Tile const &nothing,
 	Entity const &entity ) :
+	Body( entity.getPosition()),
 	mLocked( true ),
 	mScreenSize( screenSize ),
 	mSpriteSize( spriteSize ),
@@ -48,10 +50,17 @@ void Camera::render( sf::RenderTarget &target, sf::RenderStates states, sf::Colo
 	{
 		for( iterator.x = position.x - fov.x; iterator.x <= position.x + fov.x; iterator.x++ )
 		{
-			mWorld[ iterator ].render( target, states, color );
-			if( mWorld.isEntityOn( iterator ))
+			if( mWorld.sees( position, iterator ))
 			{
-				mWorld.getEntityOn( iterator ).render( target, states, color );
+				mWorld[ iterator ].render( target, states, color );
+				if( mWorld.isEntityOn( iterator ))
+				{
+					mWorld.getEntityOn( iterator ).render( target, states, color );
+				}
+			}
+			else
+			{
+				mNothing.render( target, states, color );
 			}
 			states.transform.translate( 1, 0 );
 			//we move the transform one to the right (one tile)

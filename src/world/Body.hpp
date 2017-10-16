@@ -5,7 +5,6 @@
 class Body
 {
 	public:
-	Body() = default;
 	Body( world::Point const &position );
 
 	virtual ~Body() = default;

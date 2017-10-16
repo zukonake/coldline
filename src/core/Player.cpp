@@ -1,5 +1,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 //
+#include <utility/Logger.hpp>
 #include <render/Tile.hpp>
 #include <data/Dataset.hpp>
 #include <world/entity/EntityType.hpp>
@@ -92,15 +93,24 @@ void Player::handleEvent( sf::Event const &event )
 
 void Player::move( world::Vector const &by )
 {
-	if( mCamera.isLocked())
+	if( !mDoneAction )
 	{
-		if( mEntity.move( by ))
+		if( mCamera.isLocked())
+		{
+			if( mEntity.move( by ))
+			{
+				mCamera.move( by );
+				mDoneAction = true;
+			}
+		}
+		else
 		{
 			mCamera.move( by );
 		}
 	}
-	else
-	{
-		mCamera.move( by );
-	}
+	utility::logger.log( utility::Logger::TRACE,
+		"Moved to: " +
+		std::to_string( mEntity.getPosition().x ) + ", " +
+		std::to_string( mEntity.getPosition().y ) + ", " +
+		std::to_string( mEntity.getPosition().z ));
 }

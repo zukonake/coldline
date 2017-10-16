@@ -21,6 +21,18 @@ Block const &Chunk::operator[]( world::Point const &point ) const noexcept
 	return mValue[ getInternalPoint( point )];
 }
 
+bool Chunk::isAnchored() const
+{
+	for( auto const &iEntity : mEntities )
+	{
+		if( iEntity.second.get().isChunkAnchor())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Chunk::isEntityOn( world::Point const &point ) const
 {
 	return mEntities.count( point ) > 0;

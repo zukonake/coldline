@@ -3,10 +3,11 @@
 #include <world/World.hpp>
 #include "Entity.hpp"
 
-Entity::Entity( World &world, world::Point const &position, EntityType const &type ) noexcept :
+Entity::Entity( World &world, world::Point const &position, EntityType const &type, bool const &chunkAnchor ) noexcept :
+	Body( position ),
 	mWorld( world ),
 	mType( type ),
-	mPosition( position )
+	mChunkAnchor( chunkAnchor )
 {
 
 }
@@ -41,6 +42,11 @@ bool Entity::teleport( world::Point const &to )
 bool Entity::isPassable() const noexcept
 {
 	return !mType.mSolid;
+}
+
+bool Entity::isChunkAnchor() const noexcept
+{
+	return mChunkAnchor;
 }
 
 bool Entity::canMove( world::Point const &to ) const

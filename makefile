@@ -1,4 +1,4 @@
-TARGET ?= rozue
+TARGET ?= coldline
 
 BUILD_DIR := build
 SRC_DIR := src
@@ -31,7 +31,7 @@ WARNING_FLAGS := \
 
 LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system -pthread
 DEBUG_FLAGS := -ferror-limit=5 -g -O0 -ftrapv
-FLAGS := $(INCLUDE_FLAGS) $(WARNING_FLAGS) -MMD -MP -std=c++14 -pedantic $(DEBUG_FLAGS)
+FLAGS := $(INCLUDE_FLAGS) $(WARNING_FLAGS) -MMD -MP -std=c++17 -pedantic $(DEBUG_FLAGS)
 
 .PHONY : clean
 

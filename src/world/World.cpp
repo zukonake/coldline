@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <unordered_set>
 #include <string>
 //
 #include <utility/Logger.hpp>
@@ -12,27 +13,29 @@
 World::World( Dataset const &dataset ) :
 	mGenerator( dataset )
 {
+	startUnloader();
+}
 
+
+
+World::~World()
+{
+	if( mUnloading )
+	{
+		stopUnloader();
+	}
 }
 
 
 
 Block const &World::operator[]( world::Point const &point ) const
 {
-	if( !exists( point ))
-	{
-		return loadChunk( Chunk::getPosition( point ))[ point ];
-	}
-	return mChunks[ Chunk::getPosition( point )][ point ];
+	return getChunk( Chunk::getPosition( point ))[ point ];
 }
 
 Block &World::operator[]( world::Point const &point )
 {
-	if( !exists( point ))
-	{
-		return loadChunk( Chunk::getPosition( point ))[ point ];
-	}
-	return mChunks[ Chunk::getPosition( point )][ point ];
+	return getChunk( Chunk::getPosition( point ))[ point ];
 }
 
 
@@ -44,7 +47,7 @@ bool World::sees( world::Point const &from, world::Point const &to ) const
 	{
 		return false;
 	}
-	for( auto iPoint = plot.begin(); iPoint < plot.end() - 1; ++iPoint )
+	for( auto iPoint = plot.begin() + 1; iPoint < plot.end() - 1; ++iPoint )
 	{
 		if( !operator[]( *iPoint ).isPassable())
 		{
@@ -80,20 +83,9 @@ Entity const &World::getEntityOn( world::Point const &point ) const
 	return chunk.getEntityOn( point );
 }
 
-Entity &World::createEntity( world::Point const &position, EntityType const &subtype )
+Entity &World::createPlayer( EntityType const &type )
 {
-	if( !isEntityOn( position ))
-	{
-		mEntities.emplace_back( *this, position, subtype );
-		Chunk &chunk = getChunk( Chunk::getPosition( position ));
-		chunk.mEntities.insert({ position, mEntities.back()});
-	}
-	return mEntities.back();
-}
-
-Entity &World::createPlayer( EntityType const &subtype )
-{
-	return createEntity( { 0, 0, 0 }, subtype ); //TODO 0, 0, 0 ?
+	return createEntity({ 0, 0, 0 }, type, true ); //TODO 0, 0, 0 ?
 }
 
 
@@ -113,9 +105,9 @@ void World::simulate()
 
 
 
-bool World::exists( world::Point const &point ) const
+bool World::exists( chunk::Point const &point ) const
 {
-	return mChunks.count( Chunk::getPosition( point )) > 0;
+	return mChunks.count( point ) > 0;
 }
 
 Chunk &World::loadChunk( chunk::Point const &point ) const
@@ -125,7 +117,7 @@ Chunk &World::loadChunk( chunk::Point const &point ) const
 		std::to_string( point.x ) + ", " +
 		std::to_string( point.y ) + ", " +
 		std::to_string( point.z ));
-	mChunks[ point ] = mGenerator.generate( point );
+	mChunks.insert({ point, mGenerator.generate( point )});
 	return mChunks[ point ];
 }
 
@@ -150,5 +142,68 @@ Chunk const &World::getChunk( chunk::Point const &point ) const
 	else
 	{
 		return loadChunk( point );
+	}
+}
+
+void World::startUnloader()
+{
+	mUnloading = true;
+	mUnloaderThread = std::thread( &World::unloaderLoop, this );
+}
+
+void World::stopUnloader()
+{
+	//TODO mutex?
+	mUnloading = false;
+	mUnloaderThread.join();
+}
+
+void World::unloaderLoop()
+{
+	while( mUnloading )
+	{
+		mUnloaderClock.start();
+		unloadChunks();
+		mUnloaderClock.stop();
+		mUnloaderClock.synchronize();
+	}
+}
+
+void World::unloadChunks() const
+{
+	std::unordered_set< chunk::Point > anchored;
+	for( auto const &iPair : mChunks )
+	{
+		if( iPair.second.isAnchored())
+		{
+			chunk::Point iPoint;
+			chunk::Point const &center = iPair.first;
+			for( iPoint.z = center.z - anchorRange.z; iPoint.z <= center.z + anchorRange.z; ++iPoint.z )
+			{
+				for( iPoint.y = center.y - anchorRange.y; iPoint.y <= center.y + anchorRange.y; ++iPoint.y )
+				{
+					for( iPoint.x = center.x - anchorRange.x; iPoint.x <= center.x + anchorRange.x; ++iPoint.x )
+					{
+						anchored.insert( iPoint );
+					}
+				}
+			}
+		}
+	}
+	for( auto iPair = mChunks.begin(); iPair != mChunks.end(); )
+	{
+		if( anchored.count( iPair->first ) == 0 )
+		{
+			utility::logger.log( utility::Logger::DEBUG,
+				"Unloaded chunk: " +
+				std::to_string( iPair->first.x ) + ", " +
+				std::to_string( iPair->first.y ) + ", " +
+				std::to_string( iPair->first.z ));
+			iPair = mChunks.erase( iPair );
+		}
+		else
+		{
+			++iPair;
+		}
 	}
 }

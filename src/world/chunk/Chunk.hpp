@@ -19,6 +19,7 @@ class Chunk
 	Block &operator[]( world::Point const &point ) noexcept;
 	Block const &operator[]( world::Point const &point ) const noexcept;
 
+	bool isAnchored() const;
 	bool isEntityOn( world::Point const &point ) const;
 
 	Entity &getEntityOn( world::Point const &point );
@@ -27,7 +28,7 @@ class Chunk
 	Entities const &getEntities() const;
 
 	static chunk::Point getPosition( world::Point const &point ) noexcept;
-	static chunk::Size constexpr size = { 24, 24, 1 };
+	static chunk::Size constexpr size = { 16, 16, 1 };
 	private:
 	static chunk::InternalPoint getInternalPoint( world::Point const &point ) noexcept;
 

@@ -1,5 +1,11 @@
 #include "Body.hpp"
 
+Body::Body( world::Point const &position ) :
+	mPosition( position )
+{
+
+}
+
 bool Body::move( world::Vector const &by )
 {
 	world::Point newPosition = mPosition + by;

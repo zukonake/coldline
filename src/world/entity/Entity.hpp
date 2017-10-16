@@ -11,7 +11,7 @@ class World;
 class Entity : public virtual Renderable, public Body
 {
 	public:
-	Entity( World &mWorld, world::Point const &position, EntityType const &type ) noexcept;
+	Entity( World &mWorld, world::Point const &position, EntityType const &type, bool const &chunkAnchor ) noexcept;
 
 	virtual void render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const override;
 
@@ -19,10 +19,11 @@ class Entity : public virtual Renderable, public Body
 	virtual bool teleport( world::Point const &to ) override;
 
 	bool isPassable() const noexcept;
+	bool isChunkAnchor() const noexcept;
 	private:
 	virtual bool canMove( world::Point const &to ) const override;
 
 	World &mWorld;
 	EntityType const &mType;
-	world::Point mPosition;
+	bool mChunkAnchor;
 };
