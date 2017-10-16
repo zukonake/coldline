@@ -1,5 +1,6 @@
+#include <utility/Logger.hpp>
+//
 #include "Game.hpp"
-#include <iostream>
 
 Game::Game() :
 	mDataset(),
@@ -23,6 +24,11 @@ void Game::start()
 			mWorld.simulate();
 		}
 		mClock.stop();
-		mClock.synchronize();
+		Clock::Duration delta = mClock.synchronize();
+		if( delta < Clock::Duration::zero())
+		{
+			utility::logger.log( utility::Logger::WARN,
+				"Game clock overhead: " + std::to_string( delta.count()));
+		}
 	}
 }

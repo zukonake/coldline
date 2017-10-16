@@ -15,7 +15,8 @@ class Game : SFMLClient
 
 	void start();
 	private:
-	utility::Clock< double, std::ratio< 1, 60 > > mClock;
+	typedef utility::Clock< double, std::ratio< 1, 60 > > Clock;
+	Clock mClock;
 
 	Dataset mDataset;
 	World mWorld;

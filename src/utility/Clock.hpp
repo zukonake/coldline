@@ -67,6 +67,7 @@ typename Clock< unit, ratio >::Duration Clock< unit, ratio >::synchronize()
 		std::this_thread::sleep_for( delta );
 		reset();
 	}
+	mCycle = Duration::zero();
 	return delta;
 }
 
