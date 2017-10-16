@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include <unordered_set>
+#include <set>
 #include <string>
 //
 #include <utility/Logger.hpp>
@@ -171,7 +171,7 @@ void World::unloaderLoop()
 
 void World::unloadChunks() const
 {
-	std::unordered_set< chunk::Point > anchored;
+	std::set< chunk::Point > anchored;
 	for( auto const &iPair : mChunks )
 	{
 		if( iPair.second.isAnchored())

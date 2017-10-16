@@ -41,7 +41,7 @@ class World
 	void moveEntity( world::Point const &from, world::Point const &to );
 	void simulate();
 	private://TODO add isPathClear and Path typedef
-	static constexpr chunk::Size anchorRange = { 2, 2, 0 };
+	static constexpr chunk::Size anchorRange = { 3, 3, 0 };
 
 	bool exists( chunk::Point const &point ) const;
 

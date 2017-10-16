@@ -27,8 +27,9 @@ void Game::start()
 		Clock::Duration delta = mClock.synchronize();
 		if( delta < Clock::Duration::zero())
 		{
+			auto deltaMilliseconds = std::chrono::duration_cast< std::chrono::milliseconds >( -delta );
 			utility::logger.log( utility::Logger::WARN,
-				"Game clock overhead: " + std::to_string( delta.count()));
+				"Game clock overhead: " + std::to_string( deltaMilliseconds.count()) + "ms" );
 		}
 	}
 }
