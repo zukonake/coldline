@@ -8,10 +8,10 @@
 #include <world/World.hpp>
 #include <core/Player.hpp>
 
-class Game : SFMLClient
+class Client : SFMLClient
 {
 	public:
-	Game();
+	Client();
 
 	void start();
 	private:

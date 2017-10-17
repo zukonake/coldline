@@ -1,8 +1,8 @@
 #include <utility/Logger.hpp>
 //
-#include "Game.hpp"
+#include "Client.hpp"
 
-Game::Game() :
+Client::Client() :
 	mDataset(),
 	mWorld( mDataset ),
 	mPlayer( mDataset, mWorld )
@@ -10,7 +10,7 @@ Game::Game() :
 	SFMLClient::openWindow({ 800, 600 }, "test" );
 }
 
-void Game::start()
+void Client::start()
 {
 	while( SFMLClient::isRunning() && !mPlayer.isDead())
 	{
@@ -28,8 +28,10 @@ void Game::start()
 		if( delta < Clock::Duration::zero())
 		{
 			auto deltaMilliseconds = std::chrono::duration_cast< std::chrono::milliseconds >( -delta );
+			//we negate the duration, it is negative at this point,
+			//so we bring it to a positive count
 			utility::logger.log( utility::Logger::WARN,
-				"Game clock overhead: " + std::to_string( deltaMilliseconds.count()) + "ms" );
+				"Client clock overhead: " + std::to_string( deltaMilliseconds.count()) + "ms" );
 		}
 	}
 }
