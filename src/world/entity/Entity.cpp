@@ -1,4 +1,5 @@
 #include <world/Common.hpp>
+#include <world/block/BlockShape.hpp>
 #include <world/entity/EntityType.hpp>
 #include <world/World.hpp>
 #include "Entity.hpp"
@@ -20,10 +21,13 @@ void Entity::render( sf::RenderTarget &target, sf::RenderStates states, sf::Colo
 bool Entity::move( world::Vector const &by )
 {
 	world::Point position = Body::getPosition();
-	if( Body::move( by ))
+	if( canMove( position + by ))
 	{
-		mWorld.moveEntity( position, Body::getPosition());
-		return true;
+		if( Body::move( by ))
+		{
+			mWorld.moveEntity( position, Body::getPosition());
+			return true;
+		}
 	}
 	return false;
 }
@@ -39,36 +43,20 @@ bool Entity::teleport( world::Point const &to )
 	return false;
 }
 
-bool Entity::isPassable() const noexcept
-{
-	return !mType.mSolid;
-}
-
 bool Entity::isChunkAnchor() const noexcept
 {
 	return mChunkAnchor;
 }
 
+void Entity::simulate()
+{
+	while( mWorld[ Body::getPosition()].getShape() == BlockShape::EMPTY )
+	{
+		move({ 0, 0, -1 });
+	}
+}
+
 bool Entity::canMove( world::Point const &to ) const
 {
-	auto plot = world::Line( getPosition(), to ).getPlot();
-	if( plot.empty())
-	{
-		return false;
-	}
-	for( auto iPoint = plot.begin() + 1; iPoint < plot.end(); ++iPoint )
-	{
-		if( !mWorld[ *iPoint ].isPassable())
-		{
-			return false;
-		}
-		if( mWorld.isEntityOn( *iPoint ))
-		{
-			if( mWorld.getEntityOn( *iPoint ).isPassable())
-			{
-				return false;
-			}
-		}
-	}
-	return true;
+	return mWorld.sees( Body::getPosition(), to );
 }

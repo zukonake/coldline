@@ -1,6 +1,7 @@
 #include <render/Tileset.hpp>
 #include <render/Tile.hpp>
 #include <world/block/BlockType.hpp>
+#include <world/block/BlockShape.hpp>
 #include <world/entity/EntityType.hpp>
 #include "Dataset.hpp"
 
@@ -22,13 +23,13 @@ Tile nothing =
 	{ 0, 0 }
 };
 
-BlockType stoneFloor =
+BlockType air =
 {
 	{
 		blockTiles,
 		{ 1, 0 }
 	},
-	false
+	BlockShape::EMPTY
 };
 
 BlockType stoneBrickWall =
@@ -37,7 +38,7 @@ BlockType stoneBrickWall =
 		blockTiles,
 		{ 2, 0 }
 	},
-	true
+	BlockShape::WALL
 };
 
 BlockType grass =
@@ -46,7 +47,16 @@ BlockType grass =
 		blockTiles,
 		{ 3, 0 }
 	},
-	false
+	BlockShape::FLOOR
+};
+
+BlockType dirt =
+{
+	{
+		blockTiles,
+		{ 2, 1 }
+	},
+	BlockShape::WALL
 };
 
 BlockType stoneWall =
@@ -55,7 +65,7 @@ BlockType stoneWall =
 		blockTiles,
 		{ 0, 1 }
 	},
-	true
+	BlockShape::WALL
 };
 
 EntityType human =
@@ -63,17 +73,17 @@ EntityType human =
 	{
 		creatureTiles,
 		{ 0, 0 }
-	},
-	true
+	}
 };
 
 Dataset::Dataset() noexcept
 {
 	mObjects[ "nothing" ] = &nothing;
 	mObjects[ "blockTiles" ] = &blockTiles; //TODO is it really needed?
-	mObjects[ "stoneFloor" ] = &stoneFloor;
+	mObjects[ "air" ] = &air;
 	mObjects[ "stoneBrickWall" ] = &stoneBrickWall;
 	mObjects[ "grass" ] = &grass;
+	mObjects[ "dirt" ] = &dirt;
 	mObjects[ "stoneWall" ] = &stoneBrickWall;
 	mObjects[ "human" ] = &human;
 }

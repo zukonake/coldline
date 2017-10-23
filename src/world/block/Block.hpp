@@ -1,6 +1,7 @@
 #pragma once
 
 #include <render/Renderable.hpp>
+#include <world/block/BlockShape.hpp>
 
 class Tile;
 class BlockType;
@@ -17,7 +18,7 @@ class Block : public Renderable
 
 	virtual void render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const override;
 
-	bool isPassable() const noexcept;
+	BlockShape const &getShape() const;
 	private:
 	BlockType const *mType;
 };

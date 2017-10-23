@@ -14,8 +14,7 @@ Player::Player( Dataset const &dataset, World &world ) :
 	mCamera(
 		{ 800, 600 },
 		{ 32, 32 },
-		mWorld,
-		mDataset.at< Tile >( "nothing" ),
+		{ mWorld, mDataset.at< Tile >( "nothing" ), 0.1f },
 		mEntity ),
 	mDead( false ),
 	mDoneAction( false )
@@ -99,7 +98,7 @@ void Player::move( world::Vector const &by )
 		{
 			if( mEntity.move( by ))
 			{
-				mCamera.move( by );
+				//mCamera.move( by );
 				mDoneAction = true;
 			}
 		}

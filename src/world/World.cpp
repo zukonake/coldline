@@ -4,6 +4,7 @@
 //
 #include <utility/Logger.hpp>
 #include <world/Common.hpp>
+#include <world/block/BlockShape.hpp>
 #include <world/chunk/Chunk.hpp>
 #include <world/entity/EntityType.hpp>
 #include <world/entity/Entity.hpp>
@@ -49,16 +50,13 @@ bool World::sees( world::Point const &from, world::Point const &to ) const
 	}
 	for( auto iPoint = plot.begin() + 1; iPoint < plot.end() - 1; ++iPoint )
 	{
-		if( !operator[]( *iPoint ).isPassable())
+		if( operator[]( *iPoint ).getShape() == BlockShape::WALL )
 		{
 			return false;
 		}
 		if( isEntityOn( *iPoint ))
 		{
-			if( getEntityOn( *iPoint ).isPassable() )
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 	return true;
@@ -100,7 +98,10 @@ void World::moveEntity( world::Point const &from, world::Point const &to )
 
 void World::simulate()
 {
-
+	for( auto &iEntity : mEntities )
+	{
+		iEntity.simulate();
+	}
 }
 
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fastNoise/FastNoise.h>
+
 class BlockType;
 class Dataset;
 
@@ -12,4 +14,6 @@ class Generator
 	private:
 	BlockType const &mFloor;
 	BlockType const &mWall;
+	BlockType const &mAir;
+	FastNoise mNoise;
 };

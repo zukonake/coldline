@@ -2,15 +2,13 @@
 #include "EntityType.hpp"
 
 EntityType::EntityType( Dataset const &dataset, DataMap const &dataMap ) :
-	mTile( dataset, dataMap ),
-	mSolid( dataMap.getBool( "solid" ))
+	mTile( dataset, dataMap )
 {
 
 }
 
-EntityType::EntityType( Tile const &tile, bool const &solid ) noexcept :
-	mTile( tile ),
-	mSolid( solid )
+EntityType::EntityType( Tile const &tile ) noexcept :
+	mTile( tile )
 {
 
 }

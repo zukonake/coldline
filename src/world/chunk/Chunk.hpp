@@ -28,7 +28,7 @@ class Chunk
 	Entities const &getEntities() const;
 
 	static chunk::Point getPosition( world::Point const &point ) noexcept;
-	static chunk::Size constexpr size = { 24, 24, 1 };
+	static chunk::Size constexpr size = { 24, 24, 24 };
 	private:
 	static chunk::InternalPoint getInternalPoint( world::Point const &point ) noexcept;
 

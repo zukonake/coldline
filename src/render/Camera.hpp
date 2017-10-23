@@ -2,6 +2,7 @@
 
 #include <render/Common.hpp>
 #include <render/Renderable.hpp>
+#include <render/WorldRenderer.hpp>
 #include <world/Body.hpp>
 
 class Tile;
@@ -14,8 +15,7 @@ class Camera : public virtual Renderable, public Body
 	Camera(
 		render::Size const &screenSize,
 		render::Size const &spriteSize,
-		World const &world,
-		Tile const &nothing,
+		WorldRenderer const &renderer,
 		Entity const &entity );
 
 	virtual void render( sf::RenderTarget &target, sf::RenderStates states, sf::Color color ) const override;
@@ -23,14 +23,17 @@ class Camera : public virtual Renderable, public Body
 	void lock();
 	void unlock();
 	bool isLocked() const noexcept;
+
+	virtual world::Point const &getPosition() const noexcept override;
 	private:
 	virtual bool canMove( world::Point const &to ) const override;
 
-	bool mLocked;
+	Entity const &mEntity;
+
+	WorldRenderer mRenderer;
 
 	render::Size mScreenSize;
 	render::Size mSpriteSize; //TODO replace with some config?
-	World const &mWorld;
-	Tile const &mNothing;
-	Entity const &mEntity;
+
+	bool mLocked;
 };

@@ -18,8 +18,9 @@ class Entity : public virtual Renderable, public Body
 	virtual bool move( world::Vector const &by ) override;
 	virtual bool teleport( world::Point const &to ) override;
 
-	bool isPassable() const noexcept;
 	bool isChunkAnchor() const noexcept;
+
+	void simulate();
 	private:
 	virtual bool canMove( world::Point const &to ) const override;
 

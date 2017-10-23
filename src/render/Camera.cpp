@@ -1,20 +1,22 @@
+#include <algorithm>
+//
 #include <render/Tile.hpp>
+#include <world/block/BlockShape.hpp>
 #include <world/World.hpp>
 #include "Camera.hpp"
 
 Camera::Camera(
 	render::Size const &screenSize,
 	render::Size const &spriteSize,
-	World const &world,
-	Tile const &nothing,
+	WorldRenderer const &renderer,
 	Entity const &entity ) :
 	Body( entity.getPosition()),
-	mLocked( true ),
+	mEntity( entity ),
+	mRenderer( renderer ), //TODO
 	mScreenSize( screenSize ),
 	mSpriteSize( spriteSize ),
-	mWorld( world ),
-	mNothing( nothing ),
-	mEntity( entity )
+	mLocked( true )
+
 {
 
 }
@@ -50,18 +52,7 @@ void Camera::render( sf::RenderTarget &target, sf::RenderStates states, sf::Colo
 	{
 		for( iterator.x = position.x - fov.x; iterator.x <= position.x + fov.x; iterator.x++ )
 		{
-			if( mWorld.sees( position, iterator ))
-			{
-				mWorld[ iterator ].render( target, states, color );
-				if( mWorld.isEntityOn( iterator ))
-				{
-					mWorld.getEntityOn( iterator ).render( target, states, color );
-				}
-			}
-			else
-			{
-				mNothing.render( target, states, color );
-			}
+			mRenderer.render( target, states, color, position, iterator );
 			states.transform.translate( 1, 0 );
 			//we move the transform one to the right (one tile)
 		}
@@ -88,6 +79,18 @@ void Camera::unlock()
 bool Camera::isLocked() const noexcept
 {
 	return mLocked;
+}
+
+world::Point const &Camera::getPosition() const noexcept
+{
+	if( isLocked())
+	{
+		return mEntity.getPosition();
+	}
+	else
+	{
+		return Body::getPosition();
+	}
 }
 
 bool Camera::canMove( world::Point const &to ) const

@@ -1,3 +1,5 @@
+#include <fastNoise/FastNoise.h>
+//
 #include <utility/Random.hpp>
 #include <data/Dataset.hpp>
 #include <world/block/BlockType.hpp>
@@ -6,28 +8,36 @@
 
 Generator::Generator( Dataset const &dataset ) :
 	mFloor( dataset.at< BlockType >( "grass" )),
-	mWall( dataset.at< BlockType >( "stoneWall" ))
+	mWall( dataset.at< BlockType >( "dirt" )),
+	mAir( dataset.at< BlockType >( "air" ))
 {
-
+	mNoise.SetSeed( utility::numberGenerator());
+	mNoise.SetNoiseType( FastNoise::Perlin );
 }
 
 Chunk Generator::generate( chunk::Point const &position ) const
 {
-	( void )position;
 	Chunk chunk;
-	for( unsigned iZ = 0; iZ < Chunk::size.z; iZ++ )
+	chunk::InternalPoint iterator;
+	for( iterator.z = 0; iterator.z < Chunk::size.z; iterator.z++ )
 	{
-		for( unsigned iY = 0; iY < Chunk::size.y; iY++ )
+		for( iterator.y = 0; iterator.y < Chunk::size.y; iterator.y++ )
 		{
-			for( unsigned iX = 0; iX < Chunk::size.x; iX++ )
+			for( iterator.x = 0; iterator.x < Chunk::size.x; iterator.x++ )
 			{
-				if(( utility::numberGenerator() % 50) == 0 )
+				world::Point worldPosition = (position * Chunk::size) + iterator;
+				float height = std::fabs( mNoise.GetNoise( worldPosition.x, worldPosition.y )) * -16;
+				if( worldPosition.z < height )
 				{
-					chunk[{ iX, iY, iZ }] = mWall;
+					chunk[ iterator ] = mWall;
+				}
+				else if( worldPosition.z - 1 < height )
+				{
+					chunk[ iterator ] = mFloor;
 				}
 				else
 				{
-					chunk[{ iX, iY, iZ }] = mFloor;
+					chunk[ iterator ] = mAir;
 				}
 			}
 		}
