@@ -2,10 +2,10 @@
 
 #include <EngineError.hpp>
 
-namespace chunk
+namespace data
 {
 
-class InvalidEntityError : public EngineError
+class InvalidDatasetKeyError : public EngineError
 {
 	public:
 	using EngineError::EngineError;

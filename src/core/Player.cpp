@@ -1,10 +1,8 @@
-#include <SFML/Graphics/RenderTarget.hpp>
-//
 #include <utility/Logger.hpp>
-#include <render/Tile.hpp>
 #include <data/Dataset.hpp>
 #include <world/entity/EntityType.hpp>
-#include <world/World.hpp> //TODO
+#include <world/entity/Entity.hpp>
+#include <world/World.hpp>
 #include "Player.hpp"
 
 Player::Player( Dataset const &dataset, World &world ) :

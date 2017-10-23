@@ -25,17 +25,17 @@ class DataMap
 	template< typename T >
 	geometry::Vector2D< T > toVector2D() const;
 	template< typename T >
-	geometry::Vector3D< T > toVector() const;
+	geometry::Vector3D< T > toVector3D() const;
 };
 
 template< typename T >
 geometry::Vector2D< T > DataMap::toVector2D() const
-{ //TODO other types?
+{
 	return geometry::Vector2D< T >( getDouble( 0 ), getDouble( 1 ));
 }
 
 template< typename T >
-geometry::Vector3D< T > DataMap::toVector() const
+geometry::Vector3D< T > DataMap::toVector3D() const
 {
 	return geometry::Vector3D< T >( getDouble( 0 ), getDouble( 1 ), getDouble( 2 ));
 }

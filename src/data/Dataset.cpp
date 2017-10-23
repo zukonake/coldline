@@ -79,7 +79,7 @@ EntityType human =
 Dataset::Dataset() noexcept
 {
 	mObjects[ "nothing" ] = &nothing;
-	mObjects[ "blockTiles" ] = &blockTiles; //TODO is it really needed?
+	mObjects[ "blockTiles" ] = &blockTiles;
 	mObjects[ "air" ] = &air;
 	mObjects[ "stoneBrickWall" ] = &stoneBrickWall;
 	mObjects[ "grass" ] = &grass;

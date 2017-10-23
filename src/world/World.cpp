@@ -124,6 +124,7 @@ Chunk &World::loadChunk( chunk::Point const &point ) const
 
 Chunk &World::getChunk( chunk::Point const &point )
 {
+	std::lock_guard< std::mutex > lock( mChunksMutex );
 	if( exists( point ))
 	{
 		return mChunks.at( point );
@@ -136,6 +137,7 @@ Chunk &World::getChunk( chunk::Point const &point )
 
 Chunk const &World::getChunk( chunk::Point const &point ) const
 {
+	std::lock_guard< std::mutex > lock( mChunksMutex );
 	if( exists( point ))
 	{
 		return mChunks.at( point );
@@ -154,7 +156,6 @@ void World::startUnloader()
 
 void World::stopUnloader()
 {
-	//TODO mutex?
 	mUnloading = false;
 	mUnloaderThread.join();
 }
@@ -172,6 +173,7 @@ void World::unloaderLoop()
 
 void World::unloadChunks() const
 {
+	std::lock_guard< std::mutex > lock( mChunksMutex );
 	std::set< chunk::Point > anchored;
 	for( auto const &iPair : mChunks )
 	{

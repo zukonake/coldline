@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <thread>
 #include <ratio>
 #include <list>
@@ -59,9 +60,10 @@ class World
 	Generator mGenerator;
 
 	std::list< Entity > mEntities;
-	std::unordered_map< chunk::Point, Chunk > mutable mChunks;
+	std::unordered_map< chunk::Point, Chunk > mutable mChunks; //TODO better unlaoding system
 	std::thread mUnloaderThread;
-	utility::Clock< double, std::ratio< 1, 1 > > mUnloaderClock;
+	std::mutex mutable mChunksMutex;
+	utility::Clock< float, std::ratio< 1, 1 > > mUnloaderClock;
 };
 
 template< typename... Targs >

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <stdexcept>
 #include <type_traits>
 #include <unordered_map>
 #include <string>
 //
+#include <data/Exception.hpp>
 #include <data/Loadable.hpp>
 
 class Dataset
@@ -29,6 +29,6 @@ T const &Dataset::at( std::string const &key ) const
 	}
 	catch( std::out_of_range &e )
 	{
-		throw std::runtime_error( "No such key in the dataset: " + key ); //TODO custom
+		throw data::InvalidDatasetKeyError( "No such key: " + key );
 	}
 }

@@ -46,7 +46,10 @@ Entity &Chunk::getEntityOn( world::Point const &point )
 	}
 	catch( std::out_of_range const &e )
 	{
-		throw chunk::InvalidEntityError( "TODO" );
+		throw chunk::InvalidEntityError( "No entity at: " +
+			std::to_string( point.x ) + ", " +
+			std::to_string( point.y ) + ", " +
+			std::to_string( point.z ));
 	}
 }
 
@@ -58,7 +61,10 @@ Entity const &Chunk::getEntityOn( world::Point const &point ) const
 	}
 	catch( std::out_of_range const &e )
 	{
-		throw chunk::InvalidEntityError( "TODO" );
+		throw chunk::InvalidEntityError( "No entity at: " +
+			std::to_string( point.x ) + ", " +
+			std::to_string( point.y ) + ", " +
+			std::to_string( point.z ));
 	}
 }
 

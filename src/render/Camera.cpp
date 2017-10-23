@@ -12,7 +12,7 @@ Camera::Camera(
 	Entity const &entity ) :
 	Body( entity.getPosition()),
 	mEntity( entity ),
-	mRenderer( renderer ), //TODO
+	mRenderer( renderer ),
 	mScreenSize( screenSize ),
 	mSpriteSize( spriteSize ),
 	mLocked( true )
