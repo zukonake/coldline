@@ -76,6 +76,11 @@ void Camera::unlock()
 	Body::teleport( mEntity.getPosition());
 }
 
+void Camera::changeScale( render::Scale const &change )
+{
+	mSpriteSize += mSpriteSize * change;
+}
+
 bool Camera::isLocked() const noexcept
 {
 	return mLocked;

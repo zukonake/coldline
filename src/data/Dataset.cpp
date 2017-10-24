@@ -28,8 +28,7 @@ BlockType air =
 	{
 		blockTiles,
 		{ 1, 0 }
-	},
-	BlockShape::EMPTY
+	}
 };
 
 BlockType stoneBrickWall =
@@ -37,8 +36,7 @@ BlockType stoneBrickWall =
 	{
 		blockTiles,
 		{ 2, 0 }
-	},
-	BlockShape::WALL
+	}
 };
 
 BlockType grass =
@@ -46,8 +44,7 @@ BlockType grass =
 	{
 		blockTiles,
 		{ 3, 0 }
-	},
-	BlockShape::FLOOR
+	}
 };
 
 BlockType dirt =
@@ -55,8 +52,7 @@ BlockType dirt =
 	{
 		blockTiles,
 		{ 2, 1 }
-	},
-	BlockShape::WALL
+	}
 };
 
 BlockType stoneWall =
@@ -64,8 +60,7 @@ BlockType stoneWall =
 	{
 		blockTiles,
 		{ 0, 1 }
-	},
-	BlockShape::WALL
+	}
 };
 
 EntityType human =

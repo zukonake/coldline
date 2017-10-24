@@ -74,6 +74,14 @@ void Player::handleEvent( sf::Event const &event )
 			move({ 1, 0, 0 });
 			break;
 
+		case sf::Keyboard::R:
+			mCamera.changeScale({ 1, 1 });
+			break;
+
+		case sf::Keyboard::F:
+			mCamera.changeScale({ -0.1, -0.1 });
+			break;
+
 		case sf::Keyboard::Q:
 			mCamera.unlock();
 			break;

@@ -22,6 +22,7 @@ class Camera : public virtual Renderable, public Body
 
 	void lock();
 	void unlock();
+	void changeScale( render::Scale const &change );
 	bool isLocked() const noexcept;
 
 	virtual world::Point const &getPosition() const noexcept override;

@@ -29,15 +29,15 @@ Chunk Generator::generate( chunk::Point const &position ) const
 				float height = std::fabs( mNoise.GetNoise( worldPosition.x, worldPosition.y )) * -16;
 				if( worldPosition.z < height )
 				{
-					chunk[ iterator ] = mWall;
+					chunk[ iterator ] = { mWall, BlockShape::WALL };
 				}
 				else if( worldPosition.z - 1 < height )
 				{
-					chunk[ iterator ] = mFloor;
+					chunk[ iterator ] = { mFloor, BlockShape::FLOOR };
 				}
 				else
 				{
-					chunk[ iterator ] = mAir;
+					chunk[ iterator ] = { mAir, BlockShape::EMPTY };
 				}
 			}
 		}

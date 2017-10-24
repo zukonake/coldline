@@ -4,5 +4,6 @@ enum class BlockShape
 {
 	EMPTY,
 	FLOOR,
-	WALL
+	WALL,
+	RAMP,
 };

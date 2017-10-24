@@ -2,13 +2,15 @@
 #include "Block.hpp"
 
 Block::Block( Block const &that ) noexcept :
-	mType( that.mType )
+	mType( that.mType ),
+	mShape( that.mShape )
 {
 
 }
 
-Block::Block( BlockType const &type ) noexcept :
-	mType( &type )
+Block::Block( BlockType const &type, BlockShape const &shape ) noexcept :
+	mType( &type ),
+	mShape( shape )
 {
 
 }
@@ -16,12 +18,7 @@ Block::Block( BlockType const &type ) noexcept :
 Block &Block::operator=( Block const &that ) noexcept
 {
 	mType = that.mType;
-	return *this;
-}
-
-Block &Block::operator=( BlockType const &that ) noexcept
-{
-	mType = &that;
+	mShape = that.mShape;
 	return *this;
 }
 
@@ -32,5 +29,5 @@ void Block::render( sf::RenderTarget &target, sf::RenderStates states, sf::Color
 
 BlockShape const &Block::getShape() const
 {
-	return mType->mShape;
+	return mShape;
 }

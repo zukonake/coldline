@@ -32,7 +32,14 @@ void WorldRenderer::render( sf::RenderTarget &target, sf::RenderStates states,
 		sf::Color shadedColor( shade, shade, shade, 255 );
 		//the new tile's color
 
-		mWorld[ position ].render( target, states, color * shadedColor );
+		if( mWorld[ position ].getShape() == BlockShape::RAMP )
+		{
+			mWorld[ position ].render( target, states, color * shadedColor ); //TODO something fancy?
+		}
+		else
+		{
+			mWorld[ position ].render( target, states, color * shadedColor );
+		}
 		if( mWorld.isEntityOn( position ))
 		{
 			mWorld.getEntityOn( position ).render( target, states, color * shadedColor );
